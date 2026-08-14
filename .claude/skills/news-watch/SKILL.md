@@ -58,6 +58,8 @@ One section per category that ran, in the order listed in `regions.md`. If a cat
 
 One post per region, into that region's thread (from `discord-threads.json`) — create the thread first if it doesn't have one yet (name it after the region). Post the full compiled report, splitting at Discord's ~2000-char limit between category sections (never mid-sentence). This project doesn't have a bot-token REST script the way culture-watch does yet — post via `curl` directly against the Discord REST API using a bot token if one is configured in the environment, or note in your final message that Discord posting needs to be wired before it can happen, and present the results in chat regardless (step 5 always happens either way).
 
+**Use `curl` specifically, not a scripting language's HTTP client.** Confirmed live, not just inherited from the sibling projects' docs: a first attempt at this used Python's `urllib` and got a flat `403 Forbidden` from Discord's edge (Cloudflare fingerprint-blocks non-browser-like clients) even with a valid, correctly-authenticated request — switching the exact same request to `curl` worked immediately. Don't rediscover this the hard way twice.
+
 ## 5. Present the result directly
 
 Show each region's digest/deep-dive in chat — headlines mode can be compact (category headers + the bullet list), deep-dive mode should show the full abstract + supporting items. Note the report file paths and whether Discord posting happened. Don't just say "done, check Discord."
