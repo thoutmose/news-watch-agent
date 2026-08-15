@@ -54,6 +54,20 @@ _Generated <YYYY-MM-DD>, covering <date range>_
 
 One section per category that ran, in the order listed in `regions.md`. If a category's agent found nothing verified, its section says so plainly (from the agent's own "No verified headlines..." line) rather than being omitted — a silent gap and a checked-and-quiet category mean different things.
 
+## 3.5. Also append to the searchable archive
+
+For every individual item actually kept in step 3 (not the "nothing verified" placeholders), append one JSON line to `~/Developer/news-watch-config/archive.jsonl` (create it if missing) shaped exactly:
+
+```json
+{"date": "YYYY-MM-DD", "region": "<Region>", "category": "<Category>", "headline": "<title>", "source": "<outlet>", "link": "<url>", "summary": "<1-2 sentences, under 300 chars>"}
+```
+
+Never rewrite existing lines — append only. This is what `#news-cli`'s `find` command searches (Discord's bot REST API has no general message-search endpoint, so this project keeps its own flat index rather than trying to query Discord for it). Push it back once done:
+
+```bash
+cd ~/Developer/news-watch-config && git add archive.jsonl && git commit -m "News watch: archive updates — <date>" && git push
+```
+
 ## 4. Post to Discord
 
 One post per region, into that region's thread (from `discord-threads.json`) — create the thread first if it doesn't have one yet (name it after the region). Post the full compiled report, splitting at Discord's ~2000-char limit between category sections (never mid-sentence). This project doesn't have a bot-token REST script the way culture-watch does yet — post via `curl` directly against the Discord REST API using a bot token if one is configured in the environment, or note in your final message that Discord posting needs to be wired before it can happen, and present the results in chat regardless (step 5 always happens either way).
